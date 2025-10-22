@@ -7,11 +7,17 @@ jobs:
     runs-on: windows-latest
 
     steps:
+    - name: Clean old ngrok files
+      run: Remove-Item -Recurse -Force ngrok, ngrok.zip -ErrorAction SilentlyContinue
+
     - name: Download ngrok (v3)
-      run: Invoke-WebRequest https://bin.ngrok.com/ngrok-v3-stable-windows-amd64.zip -OutFile ngrok.zip
+      run: Invoke-WebRequest https://ngrok-agent.s3.amazonaws.com/ngrok-v3-stable-windows-amd64.zip -OutFile ngrok.zip
 
     - name: Extract ngrok
       run: Expand-Archive ngrok.zip -DestinationPath ngrok
+
+    - name: Check ngrok version
+      run: .\ngrok\ngrok.exe version
 
     - name: Auth ngrok
       run: .\ngrok\ngrok.exe config add-authtoken $Env:NGROK_AUTH_TOKEN
